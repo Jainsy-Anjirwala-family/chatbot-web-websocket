@@ -151,7 +151,6 @@ export default function ChatRoom({ token, user }: Props) {
                       {msg.text}
                     </div>
                   </div>
-
                   {isMe && (
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex-shrink-0 flex items-center justify-center text-xs text-white font-bold shadow-md border border-white/10">
                       {user.username.charAt(0).toUpperCase()}
@@ -176,9 +175,9 @@ export default function ChatRoom({ token, user }: Props) {
                 />
 
                 {/* Optional: Add emoji button inside input (visual only for now) */}
-                <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
+                {/* <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </button>
+                </button> */}
               </div>
 
               <button
