@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { User } from '../types';
+const moment = require('moment');
 
 interface Props {
   onLoginSuccess: (token: string, user: User,msg?:string) => void;
@@ -33,11 +34,15 @@ export default function LoginForm({ onLoginSuccess, loginDetail }: Props & { log
     try {
       // Add a minimum delay to show the loading animation for better UX
       const minDelay = new Promise(resolve => setTimeout(resolve, 800));
-
+      const bodyVAl = {
+        email: formData.email,
+        password: formData.password,
+        login_user_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+      }
       const fetchPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/existing`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(bodyVAl),
       });
 
       const [res] = await Promise.all([fetchPromise, minDelay]);

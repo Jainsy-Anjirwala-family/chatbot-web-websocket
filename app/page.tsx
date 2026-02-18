@@ -15,6 +15,12 @@ export default function Home() {
   const [msg, setMsg] = useState<string | null>(null);
   const [loginDetail, setLoginDetail] = useState<any | null>({});
 
+  const handleLogOutSuccess = (message: string) => {
+    setToken(null);
+    setUser(null);
+    setMsg(message);
+    setLoginDetail(null);
+  }
   const handleLoginSuccess = (jwt?: string, userData?: User, msg?: string) => {
     const token:any = jwt !=="" ? jwt: null;
     setToken(token);
@@ -32,7 +38,7 @@ export default function Home() {
       ) : msg === "username or email already exists" ? (
         <LoginForm onLoginSuccess={handleLoginSuccess} loginDetail={loginDetail} />
       ) : (
-        <ChatRoom token={token!} user={user!} />
+        <ChatRoom onLogoutSuccess={handleLogOutSuccess} token={token!} user={user!} />
       )}
     </main>
   );

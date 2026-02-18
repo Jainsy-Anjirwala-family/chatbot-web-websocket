@@ -4,18 +4,46 @@ import { useEffect, useState, useRef } from "react";
 import { Socket } from "socket.io-client";
 import { initializeSocket } from "../lib/socket";
 import { ChatMessage, User } from "../types";
+const moment = require('moment');
 
 interface Props {
   token: string;
   user: User;
+  onLogoutSuccess: (message: string) => void;
 }
 
-export default function ChatRoom({ token, user }: Props) {
+export default function ChatRoom({ onLogoutSuccess, token, user }: Props) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
+  const logoutdataEmit = async (e:any) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      // Add a minimum delay to show the loading animation for better UX
+      const minDelay = new Promise(resolve => setTimeout(resolve, 800));
+
+      const fetchPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/logoutUser`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({username:  user.username, email: user.email, logout_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}),
+      });
+
+      const [res] = await Promise.all([fetchPromise, minDelay]);
+      const data:any = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Failed to logout");
+
+      onLogoutSuccess(data.message);
+    } catch (err: any) {
+      // setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   useEffect(() => {
     // Connect to WebSockets using our token
     const newSocket = initializeSocket(token);
@@ -97,6 +125,11 @@ export default function ChatRoom({ token, user }: Props) {
             <div className="flex items-center gap-2">
               <div className="px-3 py-1 bg-white/10 rounded-full border border-white/5 text-xs text-gray-300">
                 Logged in as <span className="text-purple-300 font-semibold">{user.username}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="px-3 py-1 bg-white/10 rounded-full border border-white/5 text-xs text-gray-300">
+                <button type="submit" className="text-xs text-purple-300 hover:text-purple-200 transition-colors" onClick={(e:any) => logoutdataEmit(e)} disabled={loading}>Logout</button>
               </div>
             </div>
           </header>

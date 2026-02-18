@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { User } from "../types";
-
+const moment = require('moment');
 interface Props {
   onLoginSuccess: (token: string, user: User, msg: string) => void;
 }
@@ -32,7 +32,12 @@ export default function RegisterForm({ onLoginSuccess }: Props) {
     try {
       // Add a minimum delay to show the loading animation for better UX
       const minDelay = new Promise(resolve => setTimeout(resolve, 800));
-
+      const bodyVAl = {
+        email: formData.email,
+        password: formData.password,
+        username: formData.username,
+        login_user_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+      }
       const fetchPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
